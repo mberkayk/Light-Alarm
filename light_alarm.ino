@@ -11,7 +11,7 @@ int threshold = 400;
 int ldrPin = A0;
 
 //state1 vars
-int rampUpTime = 30; //minutes
+unsigned long rampUpTime = 1800000; //thirty minutes in milliseconds
 unsigned long startTime = 0;
 
 //general vars
@@ -88,7 +88,7 @@ void state1(){
   Serial.print(" bPin: ");
   Serial.println(blueRampUp(milliseconds));// FOR DEBUGGING PURPOSES
 
-  if(milliseconds >= rampUpTime * 60000){
+  if(milliseconds >= rampUpTime){
     Serial.println("switching to state 2");// FOR DEBUGGING PURPOSES
     state = 2;  
   }
@@ -98,27 +98,19 @@ void state1(){
 
 //returns a value for the red leds depending on 
 //how many minutes have passed since going into the ramp up state
-int redRampUp(unsigned long m){
-  double minutes = m / 60000;
-  return(minutes/rampUpTime)*255;
+int redRampUp(unsigned long m){){
+  double ratio = (double)m/(double)rampUpTime;
+  return ratio*255;
 }
 
-int greenRampUp(unsigned long m){
-  double minutes = m / 60000;
-  if(minutes < rampUpTime/2){
-    return((double)m/rampUpMilli)*127;
-  }else {
-    return((double)m/rampUpMilli)*255;
-  }
+int greenRampUp(unsigned long m){){
+  double ratio = (double)m/(double)rampUpTime;
+  return ratio*ratio*255;
 }
 
 int blueRampUp(unsigned long m){
-  double minutes = m / 60000;
-  if(minutes < rampUpTime/2){
-    return((double)m/rampUpMilli)*127;
-  }else {
-    return((double)m/rampUpMilli)*255;
-  }
+  double ratio = (double)m/(double)rampUpTime;
+  return ratio*ratio*ratio*255;
 }
 
 void state2(){
